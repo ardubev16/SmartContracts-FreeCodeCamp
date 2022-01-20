@@ -17,8 +17,11 @@ contract FundMe {
     address[] public funders;
     address public owner;
 
+    AggregatorV3Interface public priceFeed;
+
     // the constructor will be called when the contract is first deployed
-    constructor() public {
+    constructor(address _priceFeed) public {
+        priceFeed = AggregatorV3Interface(_priceFeed);
         owner = msg.sender;
     }
 
@@ -36,18 +39,11 @@ contract FundMe {
 
     // contract call to another contract through an interface (AggregatorV3Interface.sol)
     function getVersion() public view returns (uint256) {
-        // address of ETH/USD conversion rate on Kovan Testnet
-        AggregatorV3Interface priceFeed = AggregatorV3Interface(
-            0x9326BFA02ADD2366b30bacB125260Af641031331
-        );
         return priceFeed.version();
     }
 
     // get ETH (1WEI) price in USD
     function getPrice() public view returns (uint256) {
-        AggregatorV3Interface priceFeed = AggregatorV3Interface(
-            0x9326BFA02ADD2366b30bacB125260Af641031331
-        );
         // priceFeed.latestRoundData() returns a TUPLE (list of different variables)
 
         // (uint80 roundId,
